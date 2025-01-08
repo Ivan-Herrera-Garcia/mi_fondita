@@ -500,7 +500,7 @@ class _GridProductosState extends State<GridProductos> {
 
 
   Widget buildRegistros() {
-    DateTime _selectedDay = DateTime.now();
+    DateTime selectedDay = DateTime.now();
     Map<DateTime, List<dynamic>> registrosPorFecha = {};
 
     return FutureBuilder<List<dynamic>>(
@@ -534,7 +534,7 @@ class _GridProductosState extends State<GridProductos> {
           );
         } else {
           // Organiza los registros por fecha (sin horas)
-          snapshot.data!.forEach((registro) {
+          for (var registro in snapshot.data!) {
             // Verifica que la fecha se esté cargando correctamente
             // print('Registro: ${registro['fecha']} - Total: ${registro['total']}');
 
@@ -544,7 +544,7 @@ class _GridProductosState extends State<GridProductos> {
               fechaCompleta = DateTime.parse(registro['fecha']);
             } catch (e) {
               // print('Error al parsear la fecha: $e');
-              return; // Si hay error en el parseo, ignoramos el registro
+              continue; // Si hay error en el parseo, ignoramos el registro
             }
 
             // Crear una fecha solo con año, mes y día para agrupar las ventas
@@ -554,7 +554,7 @@ class _GridProductosState extends State<GridProductos> {
               registrosPorFecha[fechaSolo] = [];
             }
             registrosPorFecha[fechaSolo]?.add(registro);
-          });
+          }
 
           // print('Registros por fecha: $registrosPorFecha'); // Para verificar la estructura
 
@@ -573,12 +573,12 @@ class _GridProductosState extends State<GridProductos> {
                 ),
                 firstDay: DateTime.utc(2020, 1, 1),
                 lastDay: DateTime.utc(2030, 12, 31),
-                focusedDay: _selectedDay,
+                focusedDay: selectedDay,
                 selectedDayPredicate: (day) {
-                  return isSameDay(_selectedDay, day);
+                  return isSameDay(selectedDay, day);
                 },
                 onDaySelected: (selectedDay, focusedDay) {
-                  _selectedDay = selectedDay;
+                  selectedDay = selectedDay;
                   showVentasDialog(context, registrosPorFecha[selectedDay] ?? []);
                 },
                 calendarFormat: CalendarFormat.month,
